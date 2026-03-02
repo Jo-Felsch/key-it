@@ -443,21 +443,35 @@ document.addEventListener('DOMContentLoaded', () => {
         [-33.9,151.2],[-37.8,145.0],[-27.5,153.0],[-31.9,115.9],
         [-41.3,174.8],[-36.8,174.8],
         [64.1,-21.9],[60.4,5.3],[63.4,10.4],[69.6,18.9],
+        // Extra density — fill sparse regions
+        [45.0,0.0],[50.0,10.0],[47.0,20.0],[42.0,15.0],[55.0,5.0],
+        [52.0,-1.0],[48.0,7.0],[44.0,11.0],[40.0,3.0],[46.0,17.0],
+        [35.7,51.4],[32.0,52.0],[24.0,46.8],[29.0,50.0],[27.0,56.0],
+        [31.0,121.0],[35.0,117.0],[23.0,113.0],[39.0,125.0],[34.0,109.0],
+        [26.0,120.0],[29.0,106.0],[22.0,108.0],[36.0,140.0],[33.0,130.0],
+        [20.0,77.0],[15.0,75.0],[25.0,83.0],[28.0,70.0],[18.0,85.0],
+        [42.0,-88.0],[38.0,-97.0],[33.0,-84.0],[36.0,-106.0],[45.0,-93.0],
+        [40.0,-105.0],[35.0,-90.0],[30.0,-85.0],[43.0,-71.0],[41.0,-82.0],
+        [-22.0,-48.0],[-19.0,-44.0],[-25.0,-49.0],[-28.0,-52.0],[-16.0,-40.0],
+        [-10.0,35.0],[-5.0,30.0],[2.0,33.0],[8.0,36.0],[12.0,40.0],
+        [-20.0,47.0],[-14.0,33.0],[0.0,37.0],[7.0,42.0],[10.0,30.0],
+        [62.0,130.0],[58.0,56.0],[55.0,73.0],[52.0,104.0],[48.0,88.0],
     ];
     const DEG = Math.PI / 180;
 
-    // Reusable globe renderer — reads canvas size dynamically each frame
+    // Reusable globe renderer — time-based smooth rotation, dynamic canvas size
     function createGlobeRenderer(canvas, opts) {
         const ctx = canvas.getContext('2d');
         const rFactor = opts.radiusFactor || 0.42;
         const showArcs = opts.showArcs !== false;
         const showGrid = opts.showGrid !== false;
-        const ROTATION_SPEED = opts.speed || 0.020;
+        const DEGREES_PER_SEC = opts.degreesPerSec || 30;
         const MAX_ARCS = opts.maxArcs || 100;
-        const dotBase = opts.dotBase || 1.5;
-        const dotScale = opts.dotScale || 2.5;
+        const dotBase = opts.dotBase || 2.5;
+        const dotScale = opts.dotScale || 3.5;
 
         let rotation = 0;
+        let lastTime = 0;
         const arcs = [];
         let arcTimer = 0;
 
@@ -478,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function spawnArc(now, d) {
             const visible = [];
-            const rotDeg = rotation / DEG;
+            const rotDeg = rotation;
             for (let i = 0; i < WORLD_POINTS.length; i++) {
                 const p = project(WORLD_POINTS[i][0], WORLD_POINTS[i][1], rotDeg, d);
                 if (p.z > 0.15) visible.push({ idx: i, p });
@@ -495,33 +509,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function draw(now) {
+            // Time-based smooth rotation
+            if (lastTime === 0) lastTime = now;
+            const dt = Math.min((now - lastTime) / 1000, 0.1);
+            lastTime = now;
+            rotation += DEGREES_PER_SEC * dt;
+
             const d = getDims();
             const { W, H, CX, CY, R } = d;
             ctx.clearRect(0, 0, W, H);
 
-            const atmGrad = ctx.createRadialGradient(CX, CY, R * 0.85, CX, CY, R * 1.25);
-            atmGrad.addColorStop(0, 'rgba(0,200,255,0.06)');
-            atmGrad.addColorStop(0.5, 'rgba(33,150,243,0.03)');
+            // Atmosphere glow — more visible
+            const atmGrad = ctx.createRadialGradient(CX, CY, R * 0.7, CX, CY, R * 1.3);
+            atmGrad.addColorStop(0, 'rgba(0,200,255,0.10)');
+            atmGrad.addColorStop(0.5, 'rgba(33,150,243,0.05)');
             atmGrad.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = atmGrad;
-            ctx.beginPath(); ctx.arc(CX, CY, R * 1.25, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(CX, CY, R * 1.3, 0, Math.PI * 2); ctx.fill();
 
-            ctx.strokeStyle = 'rgba(0,200,255,0.15)'; ctx.lineWidth = 1.5;
+            // Globe outline — bright and clearly visible
+            ctx.strokeStyle = 'rgba(0, 200, 255, 0.5)';
+            ctx.lineWidth = 2;
             ctx.beginPath(); ctx.arc(CX, CY, R, 0, Math.PI * 2); ctx.stroke();
 
+            // Second softer ring for depth
+            ctx.strokeStyle = 'rgba(0, 200, 255, 0.15)';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.arc(CX, CY, R + 3, 0, Math.PI * 2); ctx.stroke();
+
             if (showGrid) {
-                ctx.strokeStyle = 'rgba(0,200,255,0.04)'; ctx.lineWidth = 0.8;
+                ctx.strokeStyle = 'rgba(0,200,255,0.06)'; ctx.lineWidth = 0.8;
                 for (let lat = -60; lat <= 60; lat += 30) {
                     const phi = lat * DEG;
                     const ry = R * Math.cos(phi);
                     const cy2 = CY - R * Math.sin(phi);
                     ctx.beginPath(); ctx.ellipse(CX, cy2, ry, ry * 0.15, 0, 0, Math.PI * 2); ctx.stroke();
                 }
-                const rotDeg = rotation / DEG;
                 for (let lng = 0; lng < 360; lng += 40) {
                     ctx.beginPath(); let first = true;
                     for (let lat = -90; lat <= 90; lat += 3) {
-                        const p = project(lat, lng, rotDeg, d);
+                        const p = project(lat, lng, rotation, d);
                         if (p.z > 0) { if (first) { ctx.moveTo(p.x, p.y); first = false; } else ctx.lineTo(p.x, p.y); }
                         else { first = true; }
                     }
@@ -529,8 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            const rotDegVal = rotation / DEG;
-            const projected = WORLD_POINTS.map(([lat, lng]) => project(lat, lng, rotDegVal, d));
+            const projected = WORLD_POINTS.map(([lat, lng]) => project(lat, lng, rotation, d));
 
             if (showArcs) {
                 for (let i = arcs.length - 1; i >= 0; i--) {
@@ -562,22 +588,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 arcTimer++;
-                if (arcTimer % 3 === 0) {
-                    for (let s = 0; s < 3 && arcs.length < MAX_ARCS; s++) spawnArc(now, d);
+                if (arcTimer % 2 === 0) {
+                    for (let s = 0; s < 4 && arcs.length < MAX_ARCS; s++) spawnArc(now, d);
                 }
             }
 
+            // Dots — larger and brighter
             const sorted = projected.map((p, i) => ({ p, i })).filter(dd => dd.p.z > 0).sort((a, b) => a.p.z - b.p.z);
             for (const { p } of sorted) {
-                const alpha = 0.2 + p.z * 0.8;
+                const alpha = 0.3 + p.z * 0.7;
                 const dotR = dotBase + p.z * dotScale;
                 const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, dotR * 3);
-                glow.addColorStop(0, `rgba(0,200,255,${alpha * 0.4})`); glow.addColorStop(1, 'rgba(0,200,255,0)');
+                glow.addColorStop(0, `rgba(0,200,255,${alpha * 0.5})`); glow.addColorStop(1, 'rgba(0,200,255,0)');
                 ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(p.x, p.y, dotR * 3, 0, Math.PI * 2); ctx.fill();
                 ctx.fillStyle = `rgba(0,200,255,${alpha})`; ctx.beginPath(); ctx.arc(p.x, p.y, dotR, 0, Math.PI * 2); ctx.fill();
             }
-
-            rotation += ROTATION_SPEED;
         }
 
         return { draw };
@@ -600,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resizeGlobeCanvas();
         });
 
-        const heroGlobe = createGlobeRenderer(globeCanvas, { showArcs: true, showGrid: true });
+        const heroGlobe = createGlobeRenderer(globeCanvas, { showArcs: true, showGrid: true, degreesPerSec: 30 });
         let heroRunning = false, heroAnimId = null;
         function heroLoop(now) { if (!heroRunning) return; heroGlobe.draw(now); heroAnimId = requestAnimationFrame(heroLoop); }
 
@@ -623,7 +648,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const sGlobeRenderer = createGlobeRenderer(sGlobe, {
             showArcs: true, showGrid: false, radiusFactor: 0.40,
-            speed: 0.015, maxArcs: 50, dotBase: 1, dotScale: 1.5
+            degreesPerSec: 25, maxArcs: 50, dotBase: 1.5, dotScale: 2
         });
 
         const bCtx = beamCanvas.getContext('2d');
