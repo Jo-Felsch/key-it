@@ -446,37 +446,41 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     const DEG = Math.PI / 180;
 
-    // Reusable globe renderer — draws a rotating 3D globe on a given canvas
+    // Reusable globe renderer — reads canvas size dynamically each frame
     function createGlobeRenderer(canvas, opts) {
         const ctx = canvas.getContext('2d');
-        const W = canvas.width;
-        const H = canvas.height;
-        const CX = W / 2;
-        const CY = H / 2;
-        const R = W * (opts.radiusFactor || 0.42);
+        const rFactor = opts.radiusFactor || 0.42;
         const showArcs = opts.showArcs !== false;
         const showGrid = opts.showGrid !== false;
+        const ROTATION_SPEED = opts.speed || 0.004;
+        const MAX_ARCS = opts.maxArcs || 10;
+        const dotBase = opts.dotBase || 1.5;
+        const dotScale = opts.dotScale || 2.5;
 
         let rotation = 0;
-        const ROTATION_SPEED = opts.speed || 0.002;
         const arcs = [];
-        const MAX_ARCS = opts.maxArcs || 6;
         let arcTimer = 0;
 
-        function project(lat, lng, rot) {
+        function getDims() {
+            const W = canvas.width;
+            const H = canvas.height;
+            return { W, H, CX: W / 2, CY: H / 2, R: W * rFactor };
+        }
+
+        function project(lat, lng, rot, d) {
             const phi = lat * DEG;
             const lambda = (lng + rot) * DEG;
             const x = Math.cos(phi) * Math.sin(lambda);
             const y = -Math.sin(phi);
             const z = Math.cos(phi) * Math.cos(lambda);
-            return { x: CX + x * R, y: CY + y * R, z };
+            return { x: d.CX + x * d.R, y: d.CY + y * d.R, z };
         }
 
-        function spawnArc(now) {
+        function spawnArc(now, d) {
             const visible = [];
             const rotDeg = rotation / DEG;
             for (let i = 0; i < WORLD_POINTS.length; i++) {
-                const p = project(WORLD_POINTS[i][0], WORLD_POINTS[i][1], rotDeg);
+                const p = project(WORLD_POINTS[i][0], WORLD_POINTS[i][1], rotDeg, d);
                 if (p.z > 0.15) visible.push({ idx: i, p });
             }
             if (visible.length < 2) return;
@@ -486,11 +490,13 @@ document.addEventListener('DOMContentLoaded', () => {
             while (b.idx === a.idx && att < 10);
             if (b.idx === a.idx) return;
             arcs.push({ from: a.idx, to: b.idx, birth: now,
-                life: 1800 + Math.random() * 1200,
+                life: 1200 + Math.random() * 1000,
                 color: Math.random() > 0.5 ? [0, 200, 255] : [33, 150, 243] });
         }
 
         function draw(now) {
+            const d = getDims();
+            const { W, H, CX, CY, R } = d;
             ctx.clearRect(0, 0, W, H);
 
             const atmGrad = ctx.createRadialGradient(CX, CY, R * 0.85, CX, CY, R * 1.25);
@@ -515,7 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 for (let lng = 0; lng < 360; lng += 40) {
                     ctx.beginPath(); let first = true;
                     for (let lat = -90; lat <= 90; lat += 3) {
-                        const p = project(lat, lng, rotDeg);
+                        const p = project(lat, lng, rotDeg, d);
                         if (p.z > 0) { if (first) { ctx.moveTo(p.x, p.y); first = false; } else ctx.lineTo(p.x, p.y); }
                         else { first = true; }
                     }
@@ -524,7 +530,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const rotDegVal = rotation / DEG;
-            const projected = WORLD_POINTS.map(([lat, lng]) => project(lat, lng, rotDegVal));
+            const projected = WORLD_POINTS.map(([lat, lng]) => project(lat, lng, rotDegVal, d));
 
             if (showArcs) {
                 for (let i = arcs.length - 1; i >= 0; i--) {
@@ -556,13 +562,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 arcTimer++;
-                if (arcTimer % 30 === 0 && arcs.length < MAX_ARCS) spawnArc(now);
+                if (arcTimer % 15 === 0 && arcs.length < MAX_ARCS) spawnArc(now, d);
             }
 
-            const sorted = projected.map((p, i) => ({ p, i })).filter(d => d.p.z > 0).sort((a, b) => a.p.z - b.p.z);
+            const sorted = projected.map((p, i) => ({ p, i })).filter(dd => dd.p.z > 0).sort((a, b) => a.p.z - b.p.z);
             for (const { p } of sorted) {
                 const alpha = 0.2 + p.z * 0.8;
-                const dotR = (opts.dotBase || 1.5) + p.z * (opts.dotScale || 2.5);
+                const dotR = dotBase + p.z * dotScale;
                 const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, dotR * 3);
                 glow.addColorStop(0, `rgba(0,200,255,${alpha * 0.4})`); glow.addColorStop(1, 'rgba(0,200,255,0)');
                 ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(p.x, p.y, dotR * 3, 0, Math.PI * 2); ctx.fill();
