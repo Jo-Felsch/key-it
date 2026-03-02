@@ -438,10 +438,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const rFactor = opts.radiusFactor || 0.42;
         const showArcs = opts.showArcs !== false;
         const showGrid = opts.showGrid !== false;
-        const DEGREES_PER_SEC = opts.degreesPerSec || 30;
-        const MAX_ARCS = opts.maxArcs || 100;
-        const dotBase = opts.dotBase || 2.5;
-        const dotScale = opts.dotScale || 3.5;
+        const DEGREES_PER_SEC = opts.degreesPerSec || 7;
+        const MAX_ARCS = opts.maxArcs || 6;
+        const dotBase = opts.dotBase || 1.5;
+        const dotScale = opts.dotScale || 2.5;
+        const arcSpawnInterval = opts.arcSpawnInterval || 30;
+        const arcSpawnBatch = opts.arcSpawnBatch || 1;
+        const arcLifeBase = opts.arcLifeBase || 1800;
+        const arcLifeRange = opts.arcLifeRange || 1200;
+        const outlineAlpha = opts.outlineAlpha || 0.15;
+        const outlineWidth = opts.outlineWidth || 1.5;
+        const secondRing = opts.secondRing !== undefined ? opts.secondRing : false;
+        const atmInner = opts.atmInner || 0.06;
+        const atmOuter = opts.atmOuter || 0.03;
+        const gridAlpha = opts.gridAlpha || 0.04;
+        const dotAlphaBase = opts.dotAlphaBase || 0.2;
+        const dotGlowMul = opts.dotGlowMul || 0.4;
 
         let rotation = 0;
         let lastTime = 0;
@@ -477,12 +489,11 @@ document.addEventListener('DOMContentLoaded', () => {
             while (b.idx === a.idx && att < 10);
             if (b.idx === a.idx) return;
             arcs.push({ from: a.idx, to: b.idx, birth: now,
-                life: 1200 + Math.random() * 1000,
+                life: arcLifeBase + Math.random() * arcLifeRange,
                 color: Math.random() > 0.5 ? [0, 200, 255] : [33, 150, 243] });
         }
 
         function draw(now) {
-            // Time-based smooth rotation
             if (lastTime === 0) lastTime = now;
             const dt = Math.min((now - lastTime) / 1000, 0.1);
             lastTime = now;
@@ -492,26 +503,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const { W, H, CX, CY, R } = d;
             ctx.clearRect(0, 0, W, H);
 
-            // Atmosphere glow — more visible
-            const atmGrad = ctx.createRadialGradient(CX, CY, R * 0.7, CX, CY, R * 1.3);
-            atmGrad.addColorStop(0, 'rgba(0,200,255,0.10)');
-            atmGrad.addColorStop(0.5, 'rgba(33,150,243,0.05)');
+            const atmGrad = ctx.createRadialGradient(CX, CY, R * 0.85, CX, CY, R * 1.25);
+            atmGrad.addColorStop(0, 'rgba(0,200,255,' + atmInner + ')');
+            atmGrad.addColorStop(0.5, 'rgba(33,150,243,' + atmOuter + ')');
             atmGrad.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = atmGrad;
-            ctx.beginPath(); ctx.arc(CX, CY, R * 1.3, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(CX, CY, R * 1.25, 0, Math.PI * 2); ctx.fill();
 
-            // Globe outline — bright and clearly visible
-            ctx.strokeStyle = 'rgba(0, 200, 255, 0.5)';
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgba(0, 200, 255, ' + outlineAlpha + ')';
+            ctx.lineWidth = outlineWidth;
             ctx.beginPath(); ctx.arc(CX, CY, R, 0, Math.PI * 2); ctx.stroke();
 
-            // Second softer ring for depth
-            ctx.strokeStyle = 'rgba(0, 200, 255, 0.15)';
-            ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.arc(CX, CY, R + 3, 0, Math.PI * 2); ctx.stroke();
+            if (secondRing) {
+                ctx.strokeStyle = 'rgba(0, 200, 255, 0.15)';
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.arc(CX, CY, R + 3, 0, Math.PI * 2); ctx.stroke();
+            }
 
             if (showGrid) {
-                ctx.strokeStyle = 'rgba(0,200,255,0.06)'; ctx.lineWidth = 0.8;
+                ctx.strokeStyle = 'rgba(0,200,255,' + gridAlpha + ')'; ctx.lineWidth = 0.8;
                 for (let lat = -60; lat <= 60; lat += 30) {
                     const phi = lat * DEG;
                     const ry = R * Math.cos(phi);
@@ -561,18 +571,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 arcTimer++;
-                if (arcTimer % 2 === 0) {
-                    for (let s = 0; s < 4 && arcs.length < MAX_ARCS; s++) spawnArc(now, d);
+                if (arcTimer % arcSpawnInterval === 0) {
+                    for (let s = 0; s < arcSpawnBatch && arcs.length < MAX_ARCS; s++) spawnArc(now, d);
                 }
             }
 
-            // Dots — larger and brighter
             const sorted = projected.map((p, i) => ({ p, i })).filter(dd => dd.p.z > 0).sort((a, b) => a.p.z - b.p.z);
             for (const { p } of sorted) {
-                const alpha = 0.3 + p.z * 0.7;
+                const alpha = dotAlphaBase + p.z * (1 - dotAlphaBase);
                 const dotR = dotBase + p.z * dotScale;
                 const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, dotR * 3);
-                glow.addColorStop(0, `rgba(0,200,255,${alpha * 0.5})`); glow.addColorStop(1, 'rgba(0,200,255,0)');
+                glow.addColorStop(0, `rgba(0,200,255,${alpha * dotGlowMul})`); glow.addColorStop(1, 'rgba(0,200,255,0)');
                 ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(p.x, p.y, dotR * 3, 0, Math.PI * 2); ctx.fill();
                 ctx.fillStyle = `rgba(0,200,255,${alpha})`; ctx.beginPath(); ctx.arc(p.x, p.y, dotR, 0, Math.PI * 2); ctx.fill();
             }
@@ -598,107 +607,18 @@ document.addEventListener('DOMContentLoaded', () => {
             resizeGlobeCanvas();
         });
 
-        const heroGlobe = createGlobeRenderer(globeCanvas, { showArcs: true, showGrid: true, degreesPerSec: 30 });
-
-        // --- Hero Radial Beams (mobile only) ---
-        const heroBeamsCanvas = document.getElementById('hero-beams');
-        const BEAM_COUNT = 10;
-        const heroBeamPulses = Array.from({ length: BEAM_COUNT }, (_, i) => ({
-            angle: (i / BEAM_COUNT) * Math.PI * 2,
-            t: Math.random(),
-            speed: 0.004 + Math.random() * 0.004,
-            dir: 1
-        }));
-
-        function isMobileBeams() {
-            return heroBeamsCanvas && window.getComputedStyle(heroBeamsCanvas).display !== 'none';
-        }
-
-        function drawHeroBeams() {
-            if (!isMobileBeams()) return;
-            const dpr = window.devicePixelRatio || 1;
-            const displayW = 400;
-            const cw = displayW * dpr;
-            if (heroBeamsCanvas.width !== cw) {
-                heroBeamsCanvas.width = cw;
-                heroBeamsCanvas.height = cw;
-            }
-            const hCtx = heroBeamsCanvas.getContext('2d');
-            const CX = cw / 2;
-            const CY = cw / 2;
-            const innerR = cw * 0.35;
-            const outerR = cw * 0.49;
-
-            hCtx.clearRect(0, 0, cw, cw);
-
-            for (let i = 0; i < BEAM_COUNT; i++) {
-                const p = heroBeamPulses[i];
-                p.t += p.speed * p.dir;
-                if (p.t > 1) { p.t = 1; p.dir = -1; }
-                if (p.t < 0) { p.t = 0; p.dir = 1; }
-
-                const cos = Math.cos(p.angle);
-                const sin = Math.sin(p.angle);
-                const x1 = CX + cos * innerR;
-                const y1 = CY + sin * innerR;
-                const x2 = CX + cos * outerR;
-                const y2 = CY + sin * outerR;
-
-                const grad = hCtx.createLinearGradient(x1, y1, x2, y2);
-                grad.addColorStop(0, 'rgba(0,200,255,0.3)');
-                grad.addColorStop(0.5, 'rgba(33,150,243,0.12)');
-                grad.addColorStop(1, 'rgba(0,200,255,0.05)');
-                hCtx.strokeStyle = grad;
-                hCtx.lineWidth = 1.5 * dpr;
-                hCtx.beginPath();
-                hCtx.moveTo(x1, y1);
-                hCtx.lineTo(x2, y2);
-                hCtx.stroke();
-
-                const px = x1 + (x2 - x1) * p.t;
-                const py = y1 + (y2 - y1) * p.t;
-                const pulseR = 8 * dpr;
-                const pg = hCtx.createRadialGradient(px, py, 0, px, py, pulseR);
-                pg.addColorStop(0, 'rgba(0,200,255,0.9)');
-                pg.addColorStop(1, 'rgba(0,200,255,0)');
-                hCtx.fillStyle = pg;
-                hCtx.beginPath();
-                hCtx.arc(px, py, pulseR, 0, Math.PI * 2);
-                hCtx.fill();
-
-                const ng = hCtx.createRadialGradient(x1, y1, 0, x1, y1, 12 * dpr);
-                ng.addColorStop(0, 'rgba(0,200,255,0.12)');
-                ng.addColorStop(1, 'rgba(0,200,255,0)');
-                hCtx.fillStyle = ng;
-                hCtx.beginPath();
-                hCtx.arc(x1, y1, 12 * dpr, 0, Math.PI * 2);
-                hCtx.fill();
-
-                const og = hCtx.createRadialGradient(x2, y2, 0, x2, y2, 10 * dpr);
-                og.addColorStop(0, 'rgba(0,200,255,0.08)');
-                og.addColorStop(1, 'rgba(0,200,255,0)');
-                hCtx.fillStyle = og;
-                hCtx.beginPath();
-                hCtx.arc(x2, y2, 10 * dpr, 0, Math.PI * 2);
-                hCtx.fill();
-            }
-
-            const cg = hCtx.createRadialGradient(CX, CY, 0, CX, CY, 25 * dpr);
-            cg.addColorStop(0, 'rgba(0,200,255,0.15)');
-            cg.addColorStop(1, 'rgba(0,200,255,0)');
-            hCtx.fillStyle = cg;
-            hCtx.beginPath();
-            hCtx.arc(CX, CY, 25 * dpr, 0, Math.PI * 2);
-            hCtx.fill();
-        }
-
+        var isMobile = window.innerWidth <= 768;
+        const heroGlobe = createGlobeRenderer(globeCanvas, isMobile
+            ? { showArcs: true, showGrid: true,
+                degreesPerSec: 30, maxArcs: 100, dotBase: 2.5, dotScale: 3.5,
+                arcSpawnInterval: 2, arcSpawnBatch: 4, arcLifeBase: 1200, arcLifeRange: 1000,
+                outlineAlpha: 0.5, outlineWidth: 2, secondRing: true,
+                atmInner: 0.10, atmOuter: 0.05, gridAlpha: 0.06,
+                dotAlphaBase: 0.3, dotGlowMul: 0.5 }
+            : { showArcs: true, showGrid: true }
+        );
         let heroRunning = false, heroAnimId = null;
-        function heroLoop(now) {
-            if (!heroRunning) return;
-            heroGlobe.draw(now);
-            drawHeroBeams();
-            heroAnimId = requestAnimationFrame(heroLoop);
-        }
+        function heroLoop(now) { if (!heroRunning) return; heroGlobe.draw(now); heroAnimId = requestAnimationFrame(heroLoop); }
 
         function startHeroGlobe() { if (!heroRunning) { heroRunning = true; heroAnimId = requestAnimationFrame(heroLoop); } }
         function stopHeroGlobe() { heroRunning = false; if (heroAnimId) cancelAnimationFrame(heroAnimId); }

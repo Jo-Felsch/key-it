@@ -519,10 +519,6 @@ p {
   border-radius: 50%;
 }
 
-#hero-beams {
-  display: none;
-}
-
 /* =============================================
    WHY KEY IT SECTION (image 03)
    ============================================= */
@@ -1498,32 +1494,17 @@ footer a:hover {
     display: flex;
     order: -1;
     justify-content: center;
-    position: relative;
   }
 
   .hero-content .globe-visual {
     width: 280px;
     height: 280px;
-    overflow: visible;
-    position: relative;
-    z-index: 1;
+    overflow: hidden;
   }
 
   .hero-content .globe-visual canvas {
     width: 100% !important;
     height: 100% !important;
-  }
-
-  #hero-beams {
-    display: block;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 400px;
-    height: 400px;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 0;
   }
 
   /* Hide the tag-pill duplicate heading on mobile */
