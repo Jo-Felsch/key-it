@@ -29,34 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Mobile Menu Toggle ---
-    const mobileToggle = document.getElementById('mobile-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    if (mobileToggle && mobileMenu) {
-        mobileToggle.addEventListener('click', () => {
-            const isOpen = mobileMenu.classList.toggle('open');
-            mobileToggle.innerHTML = isOpen
-                ? '<i class="ph ph-x"></i>'
-                : '<i class="ph ph-list"></i>';
-        });
-
-        // Close menu when a link is clicked
-        mobileMenu.querySelectorAll('.mobile-menu-link, .mobile-menu-cta').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('open');
-                mobileToggle.innerHTML = '<i class="ph ph-list"></i>';
-            });
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!navbar.contains(e.target)) {
-                mobileMenu.classList.remove('open');
-                mobileToggle.innerHTML = '<i class="ph ph-list"></i>';
-            }
-        });
-    }
+    // Mobile menu is handled by inline script in index.html for reliability
 
     // --- ROI Calculator (Simple Logic) ---
     // If we had input fields, we would listen for changes here.

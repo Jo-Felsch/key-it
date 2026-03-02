@@ -34,21 +34,40 @@
             </div>
             <a href="mailto:christian@keyit-solutions.int.cy?subject=Consultation%20Request"
                 class="btn btn-primary btn-sm">Schedule Consultation</a>
-            <span class="mobile-toggle" id="mobile-toggle"><i class="ph ph-list"></i></span>
+            <span class="mobile-toggle" id="mobile-toggle" onclick="toggleMobileMenu()">&#9776;</span>
         </div>
 
         <!-- Mobile dropdown menu -->
         <div class="mobile-menu" id="mobile-menu">
-            <a href="#about" class="mobile-menu-link">About</a>
-            <a href="#services" class="mobile-menu-link">Services</a>
-            <a href="#whatwedo" class="mobile-menu-link">Why Key IT</a>
-            <a href="#process" class="mobile-menu-link">Process</a>
-            <a href="#locations" class="mobile-menu-link">Locations</a>
-            <a href="#contact" class="mobile-menu-link">Contact</a>
+            <a href="#about" class="mobile-menu-link" onclick="closeMobileMenu()">About</a>
+            <a href="#services" class="mobile-menu-link" onclick="closeMobileMenu()">Services</a>
+            <a href="#whatwedo" class="mobile-menu-link" onclick="closeMobileMenu()">Why Key IT</a>
+            <a href="#process" class="mobile-menu-link" onclick="closeMobileMenu()">Process</a>
+            <a href="#locations" class="mobile-menu-link" onclick="closeMobileMenu()">Locations</a>
+            <a href="#contact" class="mobile-menu-link" onclick="closeMobileMenu()">Contact</a>
             <a href="mailto:christian@keyit-solutions.int.cy?subject=Consultation%20Request"
-                class="mobile-menu-cta">Schedule Consultation</a>
+                class="mobile-menu-cta" onclick="closeMobileMenu()">Schedule Consultation</a>
         </div>
     </nav>
+
+    <script>
+    function toggleMobileMenu() {
+        var menu = document.getElementById('mobile-menu');
+        var btn  = document.getElementById('mobile-toggle');
+        var open = menu.classList.toggle('open');
+        btn.innerHTML = open ? '&#10005;' : '&#9776;';
+    }
+    function closeMobileMenu() {
+        var menu = document.getElementById('mobile-menu');
+        var btn  = document.getElementById('mobile-toggle');
+        menu.classList.remove('open');
+        btn.innerHTML = '&#9776;';
+    }
+    document.addEventListener('click', function(e) {
+        var nav = document.querySelector('.navbar');
+        if (nav && !nav.contains(e.target)) closeMobileMenu();
+    });
+    </script>
 
     <!-- ===================== HERO (ref: image 01) ===================== -->
     <section class="hero" id="hero">

@@ -202,7 +202,7 @@ p {
   padding: 1.25rem 0;
   z-index: 1000;
   background: transparent;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, padding 0.3s ease, border-bottom 0.3s ease;
 }
 
 .navbar.scrolled {
@@ -246,10 +246,18 @@ p {
 
 .mobile-toggle {
   display: none;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   cursor: pointer;
   color: var(--text-white);
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem 0.75rem;
+  min-width: 44px;
+  min-height: 44px;
+  line-height: 1;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 /* Mobile dropdown menu */
@@ -263,6 +271,8 @@ p {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease;
+  position: relative;
+  z-index: 10;
 }
 
 .mobile-menu.open {
