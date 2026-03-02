@@ -1425,8 +1425,25 @@ footer a:hover {
 
   .hero-content {
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
   }
-  .hero-content .globe-wrap { display: none; }
+
+  /* Globe above text on mobile */
+  .hero-content .globe-wrap {
+    display: flex;
+    order: -1;
+    justify-content: center;
+  }
+
+  .hero-content .globe-visual {
+    width: 280px;
+    height: 280px;
+  }
+
+  /* Hide the tag-pill duplicate heading on mobile */
+  .hero-text .tag-pill {
+    display: none;
+  }
 
   .stats-layout {
     grid-template-columns: 1fr;
