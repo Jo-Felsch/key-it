@@ -599,8 +599,106 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const heroGlobe = createGlobeRenderer(globeCanvas, { showArcs: true, showGrid: true, degreesPerSec: 30 });
+
+        // --- Hero Radial Beams (mobile only) ---
+        const heroBeamsCanvas = document.getElementById('hero-beams');
+        const BEAM_COUNT = 10;
+        const heroBeamPulses = Array.from({ length: BEAM_COUNT }, (_, i) => ({
+            angle: (i / BEAM_COUNT) * Math.PI * 2,
+            t: Math.random(),
+            speed: 0.004 + Math.random() * 0.004,
+            dir: 1
+        }));
+
+        function isMobileBeams() {
+            return heroBeamsCanvas && window.getComputedStyle(heroBeamsCanvas).display !== 'none';
+        }
+
+        function drawHeroBeams() {
+            if (!isMobileBeams()) return;
+            const dpr = window.devicePixelRatio || 1;
+            const displayW = 400;
+            const cw = displayW * dpr;
+            if (heroBeamsCanvas.width !== cw) {
+                heroBeamsCanvas.width = cw;
+                heroBeamsCanvas.height = cw;
+            }
+            const hCtx = heroBeamsCanvas.getContext('2d');
+            const CX = cw / 2;
+            const CY = cw / 2;
+            const innerR = cw * 0.35;
+            const outerR = cw * 0.49;
+
+            hCtx.clearRect(0, 0, cw, cw);
+
+            for (let i = 0; i < BEAM_COUNT; i++) {
+                const p = heroBeamPulses[i];
+                p.t += p.speed * p.dir;
+                if (p.t > 1) { p.t = 1; p.dir = -1; }
+                if (p.t < 0) { p.t = 0; p.dir = 1; }
+
+                const cos = Math.cos(p.angle);
+                const sin = Math.sin(p.angle);
+                const x1 = CX + cos * innerR;
+                const y1 = CY + sin * innerR;
+                const x2 = CX + cos * outerR;
+                const y2 = CY + sin * outerR;
+
+                const grad = hCtx.createLinearGradient(x1, y1, x2, y2);
+                grad.addColorStop(0, 'rgba(0,200,255,0.3)');
+                grad.addColorStop(0.5, 'rgba(33,150,243,0.12)');
+                grad.addColorStop(1, 'rgba(0,200,255,0.05)');
+                hCtx.strokeStyle = grad;
+                hCtx.lineWidth = 1.5 * dpr;
+                hCtx.beginPath();
+                hCtx.moveTo(x1, y1);
+                hCtx.lineTo(x2, y2);
+                hCtx.stroke();
+
+                const px = x1 + (x2 - x1) * p.t;
+                const py = y1 + (y2 - y1) * p.t;
+                const pulseR = 8 * dpr;
+                const pg = hCtx.createRadialGradient(px, py, 0, px, py, pulseR);
+                pg.addColorStop(0, 'rgba(0,200,255,0.9)');
+                pg.addColorStop(1, 'rgba(0,200,255,0)');
+                hCtx.fillStyle = pg;
+                hCtx.beginPath();
+                hCtx.arc(px, py, pulseR, 0, Math.PI * 2);
+                hCtx.fill();
+
+                const ng = hCtx.createRadialGradient(x1, y1, 0, x1, y1, 12 * dpr);
+                ng.addColorStop(0, 'rgba(0,200,255,0.12)');
+                ng.addColorStop(1, 'rgba(0,200,255,0)');
+                hCtx.fillStyle = ng;
+                hCtx.beginPath();
+                hCtx.arc(x1, y1, 12 * dpr, 0, Math.PI * 2);
+                hCtx.fill();
+
+                const og = hCtx.createRadialGradient(x2, y2, 0, x2, y2, 10 * dpr);
+                og.addColorStop(0, 'rgba(0,200,255,0.08)');
+                og.addColorStop(1, 'rgba(0,200,255,0)');
+                hCtx.fillStyle = og;
+                hCtx.beginPath();
+                hCtx.arc(x2, y2, 10 * dpr, 0, Math.PI * 2);
+                hCtx.fill();
+            }
+
+            const cg = hCtx.createRadialGradient(CX, CY, 0, CX, CY, 25 * dpr);
+            cg.addColorStop(0, 'rgba(0,200,255,0.15)');
+            cg.addColorStop(1, 'rgba(0,200,255,0)');
+            hCtx.fillStyle = cg;
+            hCtx.beginPath();
+            hCtx.arc(CX, CY, 25 * dpr, 0, Math.PI * 2);
+            hCtx.fill();
+        }
+
         let heroRunning = false, heroAnimId = null;
-        function heroLoop(now) { if (!heroRunning) return; heroGlobe.draw(now); heroAnimId = requestAnimationFrame(heroLoop); }
+        function heroLoop(now) {
+            if (!heroRunning) return;
+            heroGlobe.draw(now);
+            drawHeroBeams();
+            heroAnimId = requestAnimationFrame(heroLoop);
+        }
 
         function startHeroGlobe() { if (!heroRunning) { heroRunning = true; heroAnimId = requestAnimationFrame(heroLoop); } }
         function stopHeroGlobe() { heroRunning = false; if (heroAnimId) cancelAnimationFrame(heroAnimId); }
