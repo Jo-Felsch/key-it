@@ -452,8 +452,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const rFactor = opts.radiusFactor || 0.42;
         const showArcs = opts.showArcs !== false;
         const showGrid = opts.showGrid !== false;
-        const ROTATION_SPEED = opts.speed || 0.004;
-        const MAX_ARCS = opts.maxArcs || 10;
+        const ROTATION_SPEED = opts.speed || 0.020;
+        const MAX_ARCS = opts.maxArcs || 100;
         const dotBase = opts.dotBase || 1.5;
         const dotScale = opts.dotScale || 2.5;
 
@@ -562,7 +562,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 arcTimer++;
-                if (arcTimer % 15 === 0 && arcs.length < MAX_ARCS) spawnArc(now, d);
+                if (arcTimer % 3 === 0) {
+                    for (let s = 0; s < 3 && arcs.length < MAX_ARCS; s++) spawnArc(now, d);
+                }
             }
 
             const sorted = projected.map((p, i) => ({ p, i })).filter(dd => dd.p.z > 0).sort((a, b) => a.p.z - b.p.z);
@@ -621,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const sGlobeRenderer = createGlobeRenderer(sGlobe, {
             showArcs: true, showGrid: false, radiusFactor: 0.40,
-            speed: 0.003, maxArcs: 3, dotBase: 1, dotScale: 1.5
+            speed: 0.015, maxArcs: 50, dotBase: 1, dotScale: 1.5
         });
 
         const bCtx = beamCanvas.getContext('2d');
