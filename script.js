@@ -549,15 +549,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Hero Globe ---
     const globeCanvas = document.getElementById('globe-canvas');
     if (globeCanvas) {
+        // Match canvas internal resolution to its CSS display size (incl. devicePixelRatio for sharpness)
+        function resizeGlobeCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            const displayW = globeCanvas.parentElement.offsetWidth || 520;
+            const displayH = globeCanvas.parentElement.offsetHeight || 520;
+            const size = Math.min(displayW, displayH);
+            globeCanvas.width = size * dpr;
+            globeCanvas.height = size * dpr;
+        }
+        resizeGlobeCanvas();
+        window.addEventListener('resize', () => {
+            resizeGlobeCanvas();
+        });
+
         const heroGlobe = createGlobeRenderer(globeCanvas, { showArcs: true, showGrid: true });
         let heroRunning = false, heroAnimId = null;
         function heroLoop(now) { if (!heroRunning) return; heroGlobe.draw(now); heroAnimId = requestAnimationFrame(heroLoop); }
+
+        function startHeroGlobe() { if (!heroRunning) { heroRunning = true; heroAnimId = requestAnimationFrame(heroLoop); } }
+        function stopHeroGlobe() { heroRunning = false; if (heroAnimId) cancelAnimationFrame(heroAnimId); }
+
         const heroObs = new IntersectionObserver((entries) => {
-            entries.forEach(e => {
-                if (e.isIntersecting) { if (!heroRunning) { heroRunning = true; heroAnimId = requestAnimationFrame(heroLoop); } }
-                else { heroRunning = false; if (heroAnimId) cancelAnimationFrame(heroAnimId); }
-            });
-        }, { threshold: 0.1 });
+            entries.forEach(e => { if (e.isIntersecting) startHeroGlobe(); else stopHeroGlobe(); });
+        }, { threshold: 0 });
         heroObs.observe(globeCanvas.closest('.globe-wrap'));
     }
 

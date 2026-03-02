@@ -1438,6 +1438,12 @@ footer a:hover {
   .hero-content .globe-visual {
     width: 280px;
     height: 280px;
+    overflow: hidden;
+  }
+
+  .hero-content .globe-visual canvas {
+    width: 100% !important;
+    height: 100% !important;
   }
 
   /* Hide the tag-pill duplicate heading on mobile */
