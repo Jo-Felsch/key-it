@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key IT Solutions | Strategy. Engineering. Control.</title>
+    <meta name="description"
+        content="Key IT Solutions LTD is an international software development company specializing in strategy-driven system design, internal process optimization, and advanced risk management tools.">
+    <link rel="icon" type="image/png" href="logo/Key-IT Logo.png">
+    <link rel="apple-touch-icon" href="logo/Key-IT Logo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body>
+
+    <!-- ===================== NAVIGATION ===================== -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="nav-logo">
+                <img src="logo/Key IT logo weiss.png" alt="Key IT Solutions Logo" style="height: 36px; width: auto;">
+            </a>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#services">Services</a>
+                <a href="#process">Process</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <a href="mailto:christian@keyit-solutions.int.cy?subject=Consultation%20Request"
+                class="btn btn-primary btn-sm">Schedule Consultation</a>
+            <span class="mobile-toggle"><i class="ph ph-list"></i></span>
+        </div>
+    </nav>
+
+    <!-- ===================== HERO (ref: image 01) ===================== -->
+    <section class="hero" id="hero">
+        <div class="hero-bg">
+            <div class="hero-glow-orb orb-1"></div>
+            <div class="hero-glow-orb orb-2"></div>
+            <!-- Decorative SVG glow lines -->
+            <svg class="hero-glow-lines" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="none">
+                <path d="M-100,700 C200,650 400,200 700,350 C1000,500 1200,100 1540,250"
+                    stroke="#2196F3" stroke-width="1.5" opacity="0.15" fill="none" />
+                <path d="M-100,750 C250,700 500,250 800,400 C1100,550 1300,150 1540,300"
+                    stroke="#00C8FF" stroke-width="1" opacity="0.1" fill="none" />
+                <path d="M-100,800 C300,600 600,300 900,500 C1100,650 1350,200 1540,400"
+                    stroke="#2196F3" stroke-width="0.8" opacity="0.08" fill="none" />
+            </svg>
+        </div>
+
+        <div class="container hero-content">
+            <div class="hero-text">
+                <div class="animate fade-in" style="margin-bottom: 1.5rem;">
+                    <span class="tag-pill"><i class="ph ph-lightning" style="margin-right: 0.4rem;"></i>Strategy-Driven Software Development</span>
+                </div>
+                <div class="animate fade-in">
+                    <h1>Strategy-Driven Software.<br><span class="text-cyan">Built for Precision.</span></h1>
+                </div>
+                <p class="animate fade-in-delay-1">
+                    Key IT Solutions delivers scalable, data-driven software architectures for businesses that require
+                    precision, automation, and structured decision-making environments.
+                </p>
+                <div class="animate fade-in-delay-2">
+                    <a href="mailto:christian@keyit-solutions.int.cy?subject=Consultation%20Request"
+                        class="btn btn-primary pulse">Schedule Consultation &nbsp;→</a>
+                </div>
+            </div>
+
+            <div class="globe-wrap animate fade-in-delay-2">
+                <div class="globe-visual" id="globe">
+                    <canvas id="globe-canvas" width="960" height="960"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== STATS / ABOUT (ref: image 02) ===================== -->
+    <section class="section stats-section" id="about">
+        <div class="container">
+            <div class="stats-layout">
+                <div>
+                    <span class="section-label animate fade-in">About Us</span>
+                    <h2 class="animate fade-in">Key IT Solutions is dedicated to providing innovative software solutions and IT services that empower businesses.</h2>
+
+                    <div class="stats-row animate fade-in-delay-1">
+                        <div class="stat-item">
+                            <span class="stat-arrow">↑</span>
+                            <span class="stat-number">4</span>
+                            <span class="stat-label">Core Service Areas</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-arrow">↑</span>
+                            <span class="stat-number">7+</span>
+                            <span class="stat-label">Software Services</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-arrow">↑</span>
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Custom-Built Solutions</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-arrow">↑</span>
+                            <span class="stat-number">EU</span>
+                            <span class="stat-label">Standards & Compliance</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="animate fade-in-delay-2 logo-anim-wrap">
+                    <div class="logo-anim" id="logo-anim">
+                        <img src="logo/Key IT logo weiss.png" alt="Key IT Solutions" class="logo-anim-img">
+                        <canvas id="logo-pulses" width="1000" height="700"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== SERVICES ===================== -->
+    <section class="section" id="services">
+        <div class="container">
+            <div style="text-align: center; max-width: 700px; margin: 0 auto 3rem auto;">
+                <span class="section-label animate fade-in">Software Services</span>
+                <h2 class="animate fade-in">What We Do</h2>
+                <p class="animate fade-in">From strategy development to ongoing system maintenance — we cover the
+                    complete software development lifecycle.</p>
+            </div>
+
+            <div class="orbit-scene animate fade-in" id="orbit-scene">
+                <canvas id="orbit-beams" width="700" height="700"></canvas>
+                <div class="orbit-globe">
+                    <canvas id="service-globe" width="480" height="480"></canvas>
+                </div>
+                <div class="orbit-ring" id="orbit-ring">
+                    <div class="orbit-node" data-angle="0">
+                        <div class="orbit-node-inner">
+                            <i class="ph ph-code"></i>
+                            <span>Custom Software</span>
+                        </div>
+                    </div>
+                    <div class="orbit-node" data-angle="45">
+                        <div class="orbit-node-inner">
+                            <i class="ph ph-plugs-connected"></i>
+                            <span>API Integrations</span>
+                        </div>
+                    </div>
+                    <div class="orbit-node" data-angle="90">
+                        <div class="orbit-node-inner">
+                            <i class="ph ph-shield-check"></i>
+                            <span>Risk Control</span>
+                        </div>
+                    </div>
+                    <div class="orbit-node" data-angle="135">
+                        <div class="orbit-node-inner">
+                            <i class="ph ph-calculator"></i>
+                            <span>Cost Engines</span>
+                        </div>
+                    </div>
+                    <div class="orbit-node" data-angle="180">
+                        <div class="orbit-node-inner">
+                            <i class="ph ph-flow-arrow"></i>
+                            <span>Automation</span>
+                        </div>
+                    </div>
+                    <div class="orbit-node" data-angle="225">
+                        <div class="orbit-node-inner">
+                            <i class="ph ph-chart-bar"></i>
+                            <span>Dashboards</span>
+                        </div>
+                    </div>
+                    <div class="orbit-node" data-angle="270">
+                        <div class="orbit-node-inner">
+                            <i class="ph ph-database"></i>
+                            <span>Data Mapping</span>
+                        </div>
+                    </div>
+                    <div class="orbit-node" data-angle="315">
+                        <div class="orbit-node-inner">
+                            <i class="ph ph-wrench"></i>
+                            <span>Maintenance</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== WHY CHOOSE KEY IT (ref: What we do.png) ===================== -->
+    <section class="section" id="whatwedo">
+        <div class="container">
+            <div class="whatwedo-header animate fade-in">
+                <h2>Why choose Key IT?</h2>
+                <p>Discover how Key IT Solutions can transform your operations with precision-built software and strategy-driven engineering.</p>
+            </div>
+
+            <div class="whatwedo-grid">
+                <!-- Card 1 -->
+                <div class="whatwedo-card animate fade-in">
+                    <span class="whatwedo-badge"><span class="badge-dot"></span>1</span>
+                    <h3>Strategy-driven architecture</h3>
+                    <p>Gain full visibility into your operations with structured dashboards, rule-based logic environments, and performance tracking systems.</p>
+                    <div class="whatwedo-mockup">
+                        <div class="mockup-dashboard">
+                            <div class="mockup-widget">
+                                <span class="mockup-label"><i class="ph ph-chart-line-up"></i> This quarter</span>
+                                <span class="mockup-value">+34%</span>
+                                <span class="mockup-sublabel">Operational Efficiency</span>
+                                <span class="mockup-status"><span class="status-dot"></span> On track</span>
+                            </div>
+                            <div class="mockup-bars">
+                                <div class="mockup-bar" style="height: 40%;"></div>
+                                <div class="mockup-bar" style="height: 65%;"></div>
+                                <div class="mockup-bar" style="height: 50%;"></div>
+                                <div class="mockup-bar accent" style="height: 85%;"></div>
+                                <div class="mockup-bar" style="height: 70%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="whatwedo-card animate fade-in-delay-1">
+                    <span class="whatwedo-badge"><span class="badge-dot"></span>2</span>
+                    <h3>Precision engineering</h3>
+                    <p>We collaborate with specialized development teams focused on market-specific technology, combining domain expertise with robust engineering standards.</p>
+                    <div class="whatwedo-mockup">
+                        <div class="mockup-team">
+                            <span class="mockup-team-title">Development Team</span>
+                            <div class="mockup-member">
+                                <span class="member-avatar" style="background: #2196F3;">CE</span>
+                                <div><strong>Christian E.</strong><br><span>Director &amp; Lead Architect</span></div>
+                            </div>
+                            <div class="mockup-member">
+                                <span class="member-avatar" style="background: #00C8FF;">SK</span>
+                                <div><strong>Sofoklis K.</strong><br><span>Secretary &amp; Operations</span></div>
+                            </div>
+                            <div class="mockup-member">
+                                <span class="member-avatar" style="background: #5C35D0;">DT</span>
+                                <div><strong>Dev Team</strong><br><span>Senior Engineers</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="whatwedo-card animate fade-in-delay-1">
+                    <span class="whatwedo-badge"><span class="badge-dot"></span>3</span>
+                    <h3>Risk control &amp; compliance</h3>
+                    <p>Build exposure monitoring, rule-based safeguards, and operational risk frameworks that meet EU standards and protect your business.</p>
+                    <div class="whatwedo-mockup">
+                        <div class="mockup-lesson">
+                            <div class="lesson-icon"><i class="ph ph-shield-check"></i></div>
+                            <span class="lesson-category">Risk Management</span>
+                            <span class="lesson-title">Compliance framework active</span>
+                            <strong class="lesson-headline">Automated safeguards for operational&nbsp;integrity</strong>
+                            <div class="lesson-meta">
+                                <span><i class="ph ph-check-circle"></i> EU compliant</span>
+                                <span><i class="ph ph-lock-simple"></i> Audit-ready</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="whatwedo-card animate fade-in-delay-2">
+                    <span class="whatwedo-badge"><span class="badge-dot"></span>4</span>
+                    <h3>Competitive advantage</h3>
+                    <p>Stay ahead with custom-built software that adapts to your market. Key IT's solutions help you scale operations and maintain your technological edge.</p>
+                    <div class="whatwedo-mockup">
+                        <div class="mockup-profile">
+                            <div class="profile-sidebar">
+                                <span class="sidebar-item active"><i class="ph ph-squares-four"></i> Dashboard</span>
+                                <span class="sidebar-item"><i class="ph ph-flow-arrow"></i> Workflows</span>
+                                <span class="sidebar-item"><i class="ph ph-database"></i> Data</span>
+                                <span class="sidebar-item"><i class="ph ph-chart-bar"></i> Reports</span>
+                                <span class="sidebar-item"><i class="ph ph-gear"></i> Settings</span>
+                            </div>
+                            <div class="profile-main">
+                                <strong>System Overview</strong>
+                                <div class="profile-stats">
+                                    <div><span class="pstat-num">17</span><span class="pstat-label">Modules</span></div>
+                                    <div><span class="pstat-num">9.7k</span><span class="pstat-label">Events</span></div>
+                                    <div><span class="pstat-num">274</span><span class="pstat-label">Rules</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="whatwedo-cta animate fade-in-delay-2">
+                <a href="mailto:christian@keyit-solutions.int.cy?subject=Consultation%20Request" class="btn btn-primary">Get started now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== PROCESS ===================== -->
+    <section class="section" id="process">
+        <div class="container">
+            <div style="text-align: center; max-width: 700px; margin: 0 auto 4rem auto;">
+                <span class="section-label animate fade-in">How We Work</span>
+                <h2 class="animate fade-in">Engineering Process Framework</h2>
+                <p class="animate fade-in">A structured, six-phase methodology designed for precision, auditability,
+                    and scalable delivery.</p>
+            </div>
+
+            <div class="timeline animate fade-in" id="process-timeline">
+                <canvas id="timeline-beams" width="1200" height="160"></canvas>
+                <div class="timeline-nodes">
+                    <div class="tl-node">
+                        <div class="tl-circle"><span>01</span></div>
+                        <h4>Scope Definition</h4>
+                        <p>Objectives, system boundaries, and measurable success criteria.</p>
+                    </div>
+                    <div class="tl-node">
+                        <div class="tl-circle"><span>02</span></div>
+                        <h4>Architecture Design</h4>
+                        <p>System architecture, data mapping, security models, and integration planning.</p>
+                    </div>
+                    <div class="tl-node">
+                        <div class="tl-circle"><span>03</span></div>
+                        <h4>Engineering</h4>
+                        <p>Modular development with version control, API integration, and CI/CD pipelines.</p>
+                    </div>
+                    <div class="tl-node">
+                        <div class="tl-circle"><span>04</span></div>
+                        <h4>Validation</h4>
+                        <p>Comprehensive testing, scenario validation, and edge-case analysis.</p>
+                    </div>
+                    <div class="tl-node">
+                        <div class="tl-circle"><span>05</span></div>
+                        <h4>Deployment</h4>
+                        <p>Production rollout with full observability and monitoring.</p>
+                    </div>
+                    <div class="tl-node">
+                        <div class="tl-circle"><span>06</span></div>
+                        <h4>Optimization</h4>
+                        <p>Structured iteration, ongoing maintenance, and performance improvement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== ABOUT DETAILS & LOCATIONS ===================== -->
+    <section class="section" id="locations">
+        <div class="container">
+            <div class="about-card animate fade-in" style="margin-bottom: 3rem;">
+                <div class="grid grid-2" style="align-items: center;">
+                    <div>
+                        <span class="section-label">Partnerships</span>
+                        <h3>Specialized Collaboration</h3>
+                        <p>We collaborate with specialized software development teams focused on market-specific
+                            technology solutions. Through these partnerships, we combine domain expertise with robust
+                            engineering standards to deliver scalable, data-driven software architectures tailored to
+                            complex operational needs.</p>
+                        <ul class="feature-list">
+                            <li><i class="ph ph-check-circle"></i>
+                                <span>Scalable, data-driven software architectures</span></li>
+                            <li><i class="ph ph-check-circle"></i>
+                                <span>European business standards &amp; operational transparency</span></li>
+                            <li><i class="ph ph-check-circle"></i>
+                                <span>Access to international IT graduates via university partnerships</span></li>
+                        </ul>
+                    </div>
+                    <div class="flex-center">
+                        <img src="logo/Key IT logo weiss.png" alt="Key IT Solutions"
+                            style="width: 55%; height: auto; filter: brightness(0.9);">
+                    </div>
+                </div>
+            </div>
+
+            <div class="animate fade-in">
+                <h3 style="text-align: center; margin-bottom: 0.5rem;">Location Advantage</h3>
+                <p style="text-align: center; max-width: 650px; margin: 0 auto 2rem auto;">
+                    With offices in Kyrenia, Nicosia, and Tala — including university towns with strong IT
+                    faculties — we benefit from highly qualified international IT graduates and competitive
+                    development structures.</p>
+            </div>
+
+            <div class="location-grid">
+                <div class="location-card animate fade-in">
+                    <i class="ph ph-map-pin"></i>
+                    <h4>Nicosia</h4>
+                    <p>Kazım Özalp Str. No:5, Çelebioğlu Apt.<br>Küçük Kaymaklı, Nicosia 99010<br>Northern Cyprus</p>
+                </div>
+                <div class="location-card animate fade-in-delay-1">
+                    <i class="ph ph-map-pin"></i>
+                    <h4>Paphos Office</h4>
+                    <p>HUB.CY — Andrea Kalvou 6<br>8577 Tala, Paphos<br>Cyprus</p>
+                </div>
+                <div class="location-card animate fade-in-delay-2">
+                    <i class="ph ph-buildings"></i>
+                    <h4>Registration</h4>
+                    <p>KEY IT SOLUTIONS LTD<br>Reg. No: 00001750<br>Cyprus</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== CTA / CONTACT (ref: image 04) ===================== -->
+    <section class="section" id="contact">
+        <div class="container">
+            <div class="cta-card animate fade-in">
+                <h2>Transform your operations with <span class="text-cyan">precision-built</span> software</h2>
+                <div class="cta-tags">
+                    <span class="tag-pill">Custom Development</span>
+                    <span class="tag-pill">Risk Systems</span>
+                    <span class="tag-pill">Workflow Automation</span>
+                </div>
+                <p class="cta-subtitle">Book a consultation today and start building.</p>
+                <a href="mailto:christian@keyit-solutions.int.cy?subject=Consultation%20Request"
+                    class="btn btn-primary pulse">Schedule Consultation &nbsp;→</a>
+            </div>
+
+            <div class="contact-grid">
+                <div class="contact-card animate fade-in">
+                    <h4><i class="ph ph-user" style="margin-right: 0.4rem;"></i>Director</h4>
+                    <p><strong>Christian Schermer</strong></p>
+                    <p><a href="mailto:christian@keyit-solutions.int.cy">christian@keyit-solutions.int.cy</a></p>
+                    <p>+357 99 423554</p>
+                </div>
+                <div class="contact-card animate fade-in-delay-1">
+                    <h4><i class="ph ph-user" style="margin-right: 0.4rem;"></i>Secretary</h4>
+                    <p><strong>Mag. Johannes Felsch</strong></p>
+                    <p><a href="mailto:johannes@keyit-solutions.int.cy">johannes@keyit-solutions.int.cy</a></p>
+                    <p>+357 99 423554</p>
+                </div>
+                <div class="contact-card animate fade-in-delay-2">
+                    <h4><i class="ph ph-map-pin" style="margin-right: 0.4rem;"></i>Headquarters</h4>
+                    <p>Kazım Özalp Str. No:5</p>
+                    <p>Nicosia, Northern Cyprus</p>
+                    <p>Reg. No: 00001750</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer>
+        <div class="container">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <img src="logo/Key IT logo weiss.png" alt="Key IT Solutions Logo"
+                            style="height: 30px; width: auto;">
+                        <span style="font-weight: 600; color: var(--text-white); font-size: 0.95rem;">Key IT Solutions</span>
+                    </div>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <a href="privacy-policy.html">Privacy Policy</a>
+                        <a href="terms-conditions.html">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+                <div style="text-align: center; font-size: 0.85rem; color: var(--text-muted); padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                    &copy; 2026 Key IT Solutions LTD. All rights reserved. &nbsp;|&nbsp; Reg. No: 00001750, Cyprus
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="cookie-banner.js"></script>
+</body>
+
+</html>
